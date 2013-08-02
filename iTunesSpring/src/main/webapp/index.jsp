@@ -12,10 +12,10 @@
 </head>
 <body>
 <h1>iTunes Manager</h1>
-<h1>This does not work!!</h1>
+<h1>This almost works!!</h1>
 <a href="byDirectories">Music Collection by Directories</a><br/>
 <a href="byItunes">Music Collection Catalogued by iTunes</a><br/>
-<a href="notInITunes">Music Collection Not Catalogued by iTunes</a><br/>
+<a href="notInItunes">Music Collection Not Catalogued by iTunes</a><br/>
 </body>
 </html>
 </jsp:root>
