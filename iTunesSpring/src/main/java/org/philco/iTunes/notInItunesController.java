@@ -22,7 +22,7 @@ public class notInItunesController {
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping(value = "/notInItunes", method = RequestMethod.GET)
+	@RequestMapping(value = "/notInITunes", method = RequestMethod.GET)
 	public String notInItunes(Locale locale, Model model) {
 		logger.info("Welcome to notInItunes! The client locale is {}.", locale);
 		
@@ -33,7 +33,7 @@ public class notInItunesController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		return "notInItunes";
+		return "notInITunes";
 	}
 	
 }
