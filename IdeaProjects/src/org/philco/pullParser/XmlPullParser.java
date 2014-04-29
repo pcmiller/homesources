@@ -1,14 +1,10 @@
 package org.philco.pullParser;
 
-import org.philco.animals.Animal;
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -17,11 +13,10 @@ import java.util.Stack;
  */
 public class XmlPullParser {
 
-    private final Map<String, Animal.Element> nameToTypeMapping = new HashMap<String, Animal.Element>();
     XMLToken xmlToken;
+    public XMLToken endToken = new XMLToken ("</endToken>");
 
     private StringBuilder currentText;
-    private Animal.Element currentElement;
     XMLStreamReader xmlReader;
     Stack<Integer> savedEventStack;
 
@@ -40,11 +35,6 @@ public class XmlPullParser {
 
         XMLInputFactory factory = XMLInputFactory.newFactory();
         xmlReader = factory.createXMLStreamReader(xmlStream);
-
-        nameToTypeMapping.put("name", Animal.Element.NAME);
-        nameToTypeMapping.put("type", Animal.Element.TYPE);
-        nameToTypeMapping.put("location", Animal.Element.LOCATION);
-        nameToTypeMapping.put("animal", Animal.Element.ANIMAL);
     }
 
     /**
@@ -88,7 +78,10 @@ public class XmlPullParser {
                     ended(xmlReader.getLocalName());
                     xmlTokenCopy = xmlToken;
                     xmlToken = null;
-                    return xmlTokenCopy;
+                    if ( xmlTokenCopy == null )
+                        return endToken;
+                    else
+                        return xmlTokenCopy;
                 case XMLEvent.START_ELEMENT:
                     if ( xmlToken != null && ! xmlToken.isComplete() ) {
                         savedEventStack.push(eventType);
@@ -110,7 +103,6 @@ public class XmlPullParser {
      */
     private void startElement(XMLStreamReader xmlReader) {
         String localName = xmlReader.getLocalName();
-        currentElement = nameToTypeMapping.get(localName);
         currentText = new StringBuilder(256);
         xmlToken = new XMLToken(localName);
         int attributes = xmlReader.getAttributeCount();
@@ -148,28 +140,9 @@ public class XmlPullParser {
      */
     private void ended(String localName) {
         // find the element type, and see if we can process it.
-        if ( xmlToken != null )
-            xmlToken.setComplete(true);
-
-        currentElement = nameToTypeMapping.get(localName);
-        if (currentElement != null) {
-
-            // We can process the element, so perform the right function.
-            // In a real world example, the "currentElement" type may be
-            // more complex and have functionality to perform the action.
-            switch (currentElement) {
-                case TYPE:
-                case NAME:
-                case LOCATION:
-                    if ( xmlToken != null )
-                        xmlToken.addAttribute(localName, currentText.toString());
-                    break;
-                case ANIMAL:
-                    if ( xmlToken != null )
-                        xmlToken.addAttribute(localName, currentText.toString());
-                    break;
-            }
-            currentElement = null;
+        if ( xmlToken != null ) {
+            xmlToken.setComplete ( true );
+            xmlToken.addAttribute ( localName, currentText.toString () );
             currentText = null;
         }
     }
