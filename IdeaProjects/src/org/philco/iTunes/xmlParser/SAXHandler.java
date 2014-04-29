@@ -1,14 +1,14 @@
-package org.philco.iTunes;
+package org.philco.iTunes.xmlParser;
 
-import org.philco.iTunes.elements.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
-public class MyHandler extends DefaultHandler {
+public class SAXHandler extends DefaultHandler {
  	private boolean tagDict = false;
 	private boolean tagKey = false;
 	private boolean tagString = false;
@@ -25,7 +25,11 @@ public class MyHandler extends DefaultHandler {
 	Element currentElement = null;
 	Element parentElement = null;
 	Element rootElement = null;
-	
+
+    ArrayList<track>tracks = new ArrayList<track>();
+    track currentTrack;
+    Element key, value;
+
 	public Element getRootElement() {
 		return rootElement;
 	}
@@ -33,21 +37,16 @@ public class MyHandler extends DefaultHandler {
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 		HashMap<String,String>attrs = new HashMap<String,String>();
-//		if ( ++numElements > MAXELEMENTS)
-//			System.exit(1);
-		
+
 		if (attributes.getLength() > 0) {
-//			String tag = "<" + qName;
 			for (int i = 0; i < attributes.getLength(); i++) {
 				attrs.put(attributes.getLocalName(i), attributes.getValue(i));
-//				tag += " " + attributes.getLocalName(i) + "="
-//						+ attributes.getValue(i);
 			}
-//			tag += ">";
 		}
 
 		if (qName.equalsIgnoreCase("dict")) {
 			tagDict = true;
+            currentTrack = new track();
 		}
 
 		else if (qName.equalsIgnoreCase("key")) {
@@ -82,7 +81,7 @@ public class MyHandler extends DefaultHandler {
 			System.err.println("Error: unrecognized tag " + qName);
 			System.exit(1);
 		}
-		if (ParseXMLFileWithSAX.isParsing()) {
+//		if (TestParseXMLFileWithSAX.isParsing()) {
 			parentElement = currentElement;
 			currentElement = new Element(qName);
 			if (attributes.getLength() > 0) {
@@ -90,7 +89,7 @@ public class MyHandler extends DefaultHandler {
 			}
 
 			elementStack.push(currentElement);
-		}
+//		}
 	}
 
 	public void characters(char ch[], int start, int length)
@@ -98,46 +97,54 @@ public class MyHandler extends DefaultHandler {
 		
 		String chars = new String(ch, start, length);
 		if (! chars.trim().isEmpty()) {
-			if (ParseXMLFileWithSAX.isParsing())
+//			if (TestParseXMLFileWithSAX.isParsing())
 				currentElement.setValue(chars.trim());
 		}
 		
 		if ( parentElement != null )
-			if (ParseXMLFileWithSAX.isParsing())
+//			if (TestParseXMLFileWithSAX.isParsing())
 				parentElement.addChild(currentElement);
 
 		if (tagDict) {
 			tagDict = false;
+            tracks.add(currentTrack);
+            currentTrack = null;
 		}
 
 		if (tagKey) {
 			tagKey = false;
+            key = currentElement;
 		}
 
 		// Doesn't handle Michael &#38; Evo
 		if (tagString) {
 			tagString = false;
+            value = currentElement;
 		}
 
 		if (tagInteger) {
 			tagInteger = false;
+            value = currentElement;
 		}
 
         if (tagTrue) {
             tagTrue = false;
+            value = currentElement;
         }
 
         if (tagFalse) {
             tagFalse = false;
+            value = currentElement;
         }
 
         if (tagDate) {
 			tagDate = false;
+            value = currentElement;
 		}
 
 		if (tagPlist) {
 			tagPlist = false;
-			if (ParseXMLFileWithSAX.isParsing())
+//			if (TestParseXMLFileWithSAX.isParsing())
 				rootElement = currentElement;
 		}
 	}
@@ -145,7 +152,17 @@ public class MyHandler extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 		System.out.println(currentElement);
-		if (ParseXMLFileWithSAX.isParsing())
+        if ( ( key != null ) && (value != null) ) {
+            try {
+                currentTrack.add(key.getValue(), value.getValue());
+                System.out.println(currentTrack);
+            } catch (UnrecognizedElementException e) {
+                System.err.println(e.getMessage());
+            }
+            key = null;
+            value = null;
+        }
+//		if (TestParseXMLFileWithSAX.isParsing())
 			parentElement = elementStack.pop();
 	}
 }

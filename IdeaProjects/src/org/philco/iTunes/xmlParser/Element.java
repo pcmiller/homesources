@@ -1,4 +1,4 @@
-package org.philco.iTunes.elements;
+package org.philco.iTunes.xmlParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,11 +39,11 @@ public class Element {
 		return children;
 	}
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getValue() {
+    public String getValue() {
 		return value;
 	}
 
@@ -71,12 +71,22 @@ public class Element {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append('<').append(name).append('>');
+		sb.append('<').append(name);
+
+        if ( attributes != null ) {
+            for (String attrName : attributes.keySet()) {
+                String attrValue = attributes.get(attrName);
+                if ( attrValue != null && !attrValue.isEmpty() )
+                    sb.append(' ').append(attrName).append('=').append(attrValue);
+            }
+        }
+
 		if (value != null) {
-			sb.append(value).append("</"+name+">");
+			sb.append('>').append(value).append("</"+name+">");
 		} else {
 			sb.append("/>");
 		}
+
 		return sb.toString();
 	}	
 }
