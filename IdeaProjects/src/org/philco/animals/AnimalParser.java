@@ -1,11 +1,13 @@
-package org.philco.pullParser;
+package org.philco.animals;
+
+import org.philco.pullParser.XmlPullParser;
 
 import javax.xml.stream.XMLStreamException;
 
 /**
  * Original version by phil on 4/26/14.
  */
-public class Tokenizer {
+public class AnimalParser {
     public static void main(String[] args) throws XMLStreamException {
         String inputFile = "animals.xml";
         try {
