@@ -14,11 +14,11 @@ import java.util.Stack;
 public class XmlPullParser {
 
     XMLToken xmlToken;
-    public XMLToken endToken = new XMLToken ("</endToken>");
-
+    public static XMLToken endToken = new XMLToken ("</endToken>");
+    public static XMLToken eofToken = new XMLToken("EOF");
     private StringBuilder currentText;
-    XMLStreamReader xmlReader;
-    Stack<Integer> savedEventStack;
+    private XMLStreamReader xmlReader;
+    private Stack<Integer> savedEventStack;
 
     /**
      * Create the stream reader class and put in the mappings between
@@ -37,30 +37,7 @@ public class XmlPullParser {
         xmlReader = factory.createXMLStreamReader(xmlStream);
     }
 
-    /**
-     * Actually performs the read operation on the XML file by repeatedly
-     * calling hasNext() and next() until the document ends.
-     * @throws XMLStreamException if the parsing fails.
-     */
-    public void readXml() throws XMLStreamException {
-        // before calling next() we can find out key things about the
-        // document, because we would now be in XMLEvent.START_DOCUMENT
-        // state.
-        assert(xmlReader.getEventType() == XMLEvent.START_DOCUMENT);
-
-        // iterate by calling hasNext in a loop until there are no more
-        // elements left to process.
-
-        while(xmlReader.hasNext()) {
-            XMLToken xmlToken = readXmlElement( xmlReader );
-            if ( xmlToken != null )
-                System.out.println("token: "+xmlToken.toString());
-        }
-    }
-
-//    Integer savedEventType = null;
-
-    public XMLToken readXmlElement(XMLStreamReader xmlReader) throws XMLStreamException {
+    public XMLToken readXmlElement() throws XMLStreamException {
         XMLToken xmlTokenCopy;
         while (xmlReader.hasNext()) {
             // get the next event and process it.
@@ -93,7 +70,7 @@ public class XmlPullParser {
                     break;
             }
         }
-        return xmlToken;
+        return eofToken;
     }
 
     /**
