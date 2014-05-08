@@ -1,0 +1,51 @@
+java_cup_spec      ::= package_spec import_list code_parts
+		       symbol_list precedence_list start_spec
+		       production_list
+package_spec       ::= PACKAGE multipart_id SEMI | empty
+import_list        ::= import_list import_spec | empty
+import_spec        ::= IMPORT import_id SEMI
+code_part          ::= action_code_part | parser_code_part |
+                       init_code | scan_code
+code_parts         ::= code_parts code_part | empty
+action_code_part   ::= ACTION CODE CODE_STRING opt_semi
+parser_code_part   ::= PARSER CODE CODE_STRING opt_semi
+init_code          ::= INIT WITH CODE_STRING opt_semi
+scan_code          ::= SCAN WITH CODE_STRING opt_semi
+symbol_list        ::= symbol_list symbol | symbol
+symbol             ::= TERMINAL type_id declares_term |
+                       NON TERMINAL type_id declares_non_term |
+		       NONTERMINAL type_id declares_non_term |
+		       TERMINAL declares_term |
+		       NON TERMINAL declares_non_term |
+		       NONTERMIANL declared_non_term
+term_name_list     ::= term_name_list COMMA new_term_id | new_term_id
+non_term_name_list ::= non_term_name_list COMMA new_non_term_id |
+	               new_non_term_id
+declares_term      ::= term_name_list SEMI
+declares_non_term  ::= non_term_name_list SEMI
+precedence_list    ::= precedence_l | empty
+precedence_l       ::= precedence_l preced + preced;
+preced             ::= PRECEDENCE LEFT terminal_list SEMI
+	               | PRECEDENCE RIGHT terminal_list SEMI
+	               | PRECEDENCE NONASSOC terminal_list SEMI
+terminal_list      ::= terminal_list COMMA terminal_id | terminal_id
+start_spec         ::= START WITH nt_id SEMI | empty
+production_list    ::= production_list production | production
+production         ::= nt_id COLON_COLON_EQUALS rhs_list SEMI
+rhs_list           ::= rhs_list BAR rhs | rhs
+rhs                ::= prod_part_list PERCENT_PREC term_id |
+                       prod_part_list
+prod_part_list     ::= prod_part_list prod_part | empty
+prod_part          ::= symbol_id opt_label | CODE_STRING
+opt_label          ::= COLON label_id | empty
+multipart_id       ::= multipart_id DOT ID | ID
+import_id          ::= multipart_id DOT STAR | multipart_id
+type_id            ::= multipart_id
+terminal_id        ::= term_id
+term_id            ::= symbol_id
+new_term_id        ::= ID
+new_non_term_id    ::= ID
+nt_id              ::= ID
+symbol_id          ::= ID
+label_id           ::= ID
+opt_semi	   ::= SEMI | empty
