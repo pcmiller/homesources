@@ -1,5 +1,5 @@
 // CUP specification for a simple expression evaluator (w/ actions)
-package org.philco.cupExample.parser;
+package org.philco.animals;
 import java_cup.runtime.*;
 
 /* Preliminaries to set up and use the scanner.  */

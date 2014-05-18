@@ -8,6 +8,7 @@ package org.philco.cupExample.parser;
 import java_cup.runtime.DefaultSymbolFactory;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.SymbolFactory;
+import org.philco.animals.sym;
 
 public class scanner {
     /* single lookahead character */
@@ -40,7 +41,7 @@ public class scanner {
                     i_val = i_val * 10 + (next_char - '0');
                     advance();
                 } while (next_char >= '0' && next_char <= '9');
-                return sf.newSymbol("NUMBER",sym.NUMBER, new Integer(i_val));
+                return sf.newSymbol("NUMBER", sym.NUMBER, new Integer(i_val));
 
                 case ';': advance(); return sf.newSymbol("SEMI", sym.SEMI);
                 case '+': advance(); return sf.newSymbol("PLUS",sym.PLUS);
