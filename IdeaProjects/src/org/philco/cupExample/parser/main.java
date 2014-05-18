@@ -11,6 +11,11 @@ public class main {
     public static void main(String[] argv) {
         boolean do_debug_parse = false;
 
+        for ( String arg : argv ) {
+            if ( "-d".equals(arg))
+                do_debug_parse = true;
+        }
+
         /* create a parsing object */
         parser parser_obj = new parser();
 
@@ -23,7 +28,8 @@ public class main {
             else
                 parse_tree = parser_obj.parse();
         } catch (Exception e) {
-            /* do cleanup here - - possibly rethrow e */
+            System.err.println("Parsing exception: " + e.getMessage());
+            e.printStackTrace();
         } finally {
             /* do close out here */
         }

@@ -1,25 +1,81 @@
 package org.philco.cupExample.parser;
 
-/**
- * Created by phil on 5/6/14.
- */
+/* Written by phil on 5/6/14. */
+
 // Simple Example Scanner Class
 
-import java_cup.runtime.DefaultSymbolFactory;
+import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.SymbolFactory;
 import org.philco.animals.sym;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class scanner {
+    static InputStream inputStream = System.in;
+
+    public static void main(String[] args) {
+        boolean do_debug_parse = false;
+
+        if ( args.length < 1) {
+            System.err.println("No input file specified.");
+            System.exit(1);
+        }
+
+        for ( String arg : args ) {
+            if ( "-d".equals(arg))
+                do_debug_parse = true;
+            else if (arg.startsWith("-")) {
+                System.err.println("Unrecognized flag " + arg);
+                System.exit(1);
+            } else {
+                scanner.setInputStream(arg);
+            }
+        }
+
+        Symbol symbol;
+        try {
+            scanner.init();
+            boolean EOF_not_found = true;
+            while ( EOF_not_found ) {
+                symbol = scanner.next_token();
+                if ( symbol == null )
+                    break;
+                System.out.println("token: " + symbol.toString());
+                if ( symbol.sym == sym.EOF )
+                    EOF_not_found = false;
+            }
+
+        } catch (IOException e) {
+            System.err.println("IOException: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+    }
+
+    public static void setInputStream(String inputFile) {
+        try {
+            inputStream = new FileInputStream(inputFile);
+        } catch (FileNotFoundException e) {
+            System.err.println("No such file: " + inputFile);
+            e.printStackTrace();
+        }
+    }
+
     /* single lookahead character */
     protected static int next_char;
+
     // since cup v11 we use SymbolFactories rather than Symbols
-    private static SymbolFactory sf = new DefaultSymbolFactory();
+    private static SymbolFactory sf = new ComplexSymbolFactory();
 
     /* advance input by one character */
     protected static void advance()
             throws java.io.IOException
-    { next_char = System.in.read(); }
+    { next_char = inputStream.read(); }
 
     /* initialize the scanner */
     public static void init()
@@ -41,7 +97,7 @@ public class scanner {
                     i_val = i_val * 10 + (next_char - '0');
                     advance();
                 } while (next_char >= '0' && next_char <= '9');
-                return sf.newSymbol("NUMBER", sym.NUMBER, new Integer(i_val));
+                return sf.newSymbol("NUMBER",sym.NUMBER, i_val);
 
                 case ';': advance(); return sf.newSymbol("SEMI", sym.SEMI);
                 case '+': advance(); return sf.newSymbol("PLUS",sym.PLUS);
@@ -60,4 +116,4 @@ public class scanner {
                     break;
             }
     }
-};
+}
