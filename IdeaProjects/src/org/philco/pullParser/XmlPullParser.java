@@ -25,16 +25,22 @@ public class XmlPullParser {
      * element names and the Element type (currentElement). This mapping
      * is used to work out how to handle each data type.
      */
-    public XmlPullParser(String inputFile) throws Exception {
-        savedEventStack = new Stack<Integer>();
-        InputStream xmlStream = XmlPullParser.class.getResourceAsStream(inputFile);
-        if ( xmlStream == null ) {
-            System.err.println("Can't find xml resource for " + inputFile);
+    public XmlPullParser(String inputFileName) throws Exception {
+        this(XmlPullParser.class.getResourceAsStream(inputFileName));
+    }
+
+    public XmlPullParser() throws Exception {
+        this(System.in);
+    }
+
+    private XmlPullParser(InputStream inputStream) throws Exception {
+        if ( inputStream == null ) {
+            System.err.println("Can't find xml resource");
             System.exit(1);
         }
-
+        savedEventStack = new Stack<Integer>();
         XMLInputFactory factory = XMLInputFactory.newFactory();
-        xmlReader = factory.createXMLStreamReader(xmlStream);
+        xmlReader = factory.createXMLStreamReader(inputStream);
     }
 
     public XMLToken readXmlElement() throws XMLStreamException {

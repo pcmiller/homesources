@@ -1,5 +1,5 @@
 // CUP specification for a simple expression evaluator (w/ actions)
-
+package org.philco.cupExample.parser;
 import java_cup.runtime.*;
 
 /* Preliminaries to set up and use the scanner.  */
@@ -26,32 +26,47 @@ expr_list ::= expr_list expr_part
               expr_part;
 
 expr_part ::= expr:e 
-	      {: System.out.println("= " + e); :} 
+	      {: System.err.println("= " + e); :} 
               SEMI              
 	      ;
 
 expr      ::= expr:e1 PLUS expr:e2    
-	      {: RESULT = new Integer(e1.intValue() + e2.intValue()); :} 
+	      {: RESULT = new Integer(e1.intValue() + e2.intValue());
+	        System.err.println(e1.intValue() + " PLUS " + e2.intValue()); :}
 	      | 
               expr:e1 MINUS expr:e2    
-              {: RESULT = new Integer(e1.intValue() - e2.intValue()); :} 
+              {: RESULT = new Integer(e1.intValue() - e2.intValue());
+	        System.err.println(e1.intValue() + " MINUS " + e2.intValue());
+              :}
 	      | 
               expr:e1 TIMES expr:e2 
-	      {: RESULT = new Integer(e1.intValue() * e2.intValue()); :} 
+	      {: RESULT = new Integer(e1.intValue() * e2.intValue());
+	        System.err.println(e1.intValue() + " TIMES " + e2.intValue());
+	      :}
 	      | 
               expr:e1 DIVIDE expr:e2 
-	      {: RESULT = new Integer(e1.intValue() / e2.intValue()); :} 
+	      {: RESULT = new Integer(e1.intValue() / e2.intValue());
+	        System.err.println(e1.intValue() + " DIVIDE " + e2.intValue());
+	      :}
 	      | 
               expr:e1 MOD expr:e2 
-	      {: RESULT = new Integer(e1.intValue() % e2.intValue()); :} 
+	      {: RESULT = new Integer(e1.intValue() % e2.intValue());
+	        System.err.println(e1.intValue() + " MOD " + e2.intValue());
+	      :}
 	      | 
               NUMBER:n                 
-	      {: RESULT = n; :} 
+	      {: RESULT = n;
+	       System.err.println(" NUMBER " + n.intValue());
+	      :}
 	      | 
               MINUS expr:e             
-	      {: RESULT = new Integer(0 - e.intValue()); :} 
+	      {: RESULT = new Integer(0 - e.intValue());
+	        System.err.println("NEGATIVE" + e.intValue());
+	      :}
 	      %prec UMINUS
 	      | 
               LPAREN expr:e RPAREN     
-	      {: RESULT = e; :} 
+	      {: RESULT = e;
+	        System.err.println(" ( " + e.intValue() + " ) ");
+	      :}
 	      ;
