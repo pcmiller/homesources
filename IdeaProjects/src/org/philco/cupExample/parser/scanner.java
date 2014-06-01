@@ -7,6 +7,7 @@ package org.philco.cupExample.parser;
 import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.SymbolFactory;
+import org.philco.animals.sym;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

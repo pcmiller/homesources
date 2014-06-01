@@ -1,7 +1,6 @@
 package org.philco.animals;
 
 import java_cup.runtime.Symbol;
-import org.philco.cupExample.parser.parser;
 
 /**
  * Created by phil on 5/8/14.

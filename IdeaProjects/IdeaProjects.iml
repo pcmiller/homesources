@@ -8,7 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="groovy-2.2.0" level="application" />
-    <orderEntry type="library" name="java-cup-11b (2)" level="project" />
+    <orderEntry type="library" name="java-cup-11b" level="project" />
   </component>
 </module>
 
