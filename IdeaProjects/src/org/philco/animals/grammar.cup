@@ -1,0 +1,35 @@
+// CUP specification for a simple expression evaluator (w/ actions)
+package org.philco.animals;
+import java_cup.runtime.*;
+
+/* Preliminaries to set up and use the scanner.  */
+init with {: scanner.init();              :};
+scan with {: return scanner.next_token(); :};
+
+terminal Integer ANIMAL;
+terminal String ID, NAME, TYPE, LOCATION;
+non terminal zoo, animal_spec, animal_parts, animal_part, animal_list;
+
+/* The grammar */
+zoo ::= animal_list animal_spec
+        |
+        animal_spec
+        ;
+
+animal_spec ::= ANIMAL animal_parts
+	    ;
+
+animal_parts ::= animal_parts animal_part
+        |
+        animal_part
+        ;
+
+animal_part ::=
+        ID
+        |
+        NAME
+        |
+        TYPE
+        |
+        LOCATION
+        ;
